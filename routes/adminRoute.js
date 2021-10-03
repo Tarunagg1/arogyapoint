@@ -1,6 +1,7 @@
 const { adminLogin, adminVerify } = require('../controllers/adminController');
 const { isAdminEmailExists } = require('../controllers/validator');
 const { sendMailOtp, verifyMailOtp} = require('../lib/mail-otp-service/controller');
+const { AdminValidationToken } = require('../lib/validateToken/validate');
 
 const router = require('express').Router();
 

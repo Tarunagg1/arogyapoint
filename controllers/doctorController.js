@@ -1,5 +1,8 @@
-const { doctorModel } = require('../db')
-const {errorHandler} = require('../config/common')
+const { doctorModel, bookdoctorModel } = require('../db')
+const { errorHandler, genrateUniqueId } = require('../config/common')
+
+
+/********************************************  ADDING DOCTOR SYSTEM ********************************************************** */
 
 /**
  * Add doctor
@@ -37,6 +40,7 @@ const addDoctor = async (req, res) => {
 
 const getAllDoctor = async (req, res) => {
     try {
+        console.log('kii');
         const doctordata = await doctorModel.find({ isactive: true, isdeleted: false });
         return res.status(200).json({ status: true, message: "Doctor list", doctordata })
     } catch (error) {
@@ -58,7 +62,7 @@ const deleteDoctor = async (req, res) => {
         const resp = await doctorModel.findByIdAndUpdate(id, { isdeleted: true }, {
             new: true
         });
-        return res.status(200).json({ status: true, message: "Doctor deleted", doctordata:resp })
+        return res.status(200).json({ status: true, message: "Doctor deleted", doctordata: resp })
     } catch (error) {
         return errorHandler(error, res);
     }
@@ -104,7 +108,7 @@ const updateDoctor = async (req, res) => {
     }
 
     try {
-        const resp = await doctorModel.findByIdAndUpdate(id,req.body, {
+        const resp = await doctorModel.findByIdAndUpdate(id, req.body, {
             new: true
         });
 
@@ -136,13 +140,89 @@ const getDoctorById = async (req, res) => {
 
 /********************************************  BOOKING SYSTEM ********************************************************** */
 
+const bookDoctor = async (req, res) => {
+    try {
+        let uniqueid = genrateUniqueId("DOC");
+
+        const { doctorid, pname, pemail, pnumber, paymentmode, appointmentdate } = req.body;
+        if (!doctorid || !pname || !pemail || !pnumber || !paymentmode || !appointmentdate) {
+            return res.status(400).json({ status: false, message: " doctorid, pname, pemail, pnumber, paymentmode, appointmentdate are required" });
+        }
+        const doctorData = await doctorModel.findById(doctorid);
+        if (!doctorData) {
+            return res.status(400).json({ status: false, message: "doctor id not exists" });
+        }
+        const { dname, demail, dnumber, fees } = doctorData;
+
+        const newDoctorBook = new bookdoctorModel({ doctorid, uniqueid, pname, pemail, pnumber, dname, demail, dnumber, paymentmode, appointmentdate, doctorfee: fees });
+        const resp = await newDoctorBook.save();
+        return res.status(200).json({ status: true, message: "your Appointment book with doctor successfully", resp });
+
+    } catch (error) {
+        return errorHandler(error, res);
+    }
+}
+
+const getAllBookDoctor = async (req, res) => {
+    try {
+        let { from } = req.query;
+
+        if (from === undefined) {
+            var start = new Date();
+            start.setHours(0, 0, 0, 0);
+            var end = new Date();
+            end.setHours(23, 59, 59, 999);
+        } else {
+            var start = new Date(from);
+            var end = new Date(from);
+            end.setHours(23, 59, 59, 999);
+        }
+
+        const resp = await bookdoctorModel.find({ appointmentdate: { "$gte": start, "$lt": end } });
+        return res.status(200).json({ status: true, message: "appointment list", resp })
+    } catch (error) {
+        console.log(error);
+        return errorHandler(error, res);
+    }
+}
+const getBookDoctorById = async (req, res) => {
+    const { id } = req.params;
+    if (!id) {
+        return res.status(400).json({ status: false, message: "appointment id required" });
+    }
+    try {
+        const resp = await bookdoctorModel.findById(id);
+        return res.status(200).json({ status: true, message: "appointment detail", resp });
+    } catch (error) {
+        return errorHandler(error, res);
+    }
+}
+
+const getBookDoctorByUniqueId = async (req, res) => {
+    const { id } = req.params;
+    if (!id) {
+        return res.status(400).json({ status: false, message: "appointment id required" });
+    }
+    try {
+        const resp = await bookdoctorModel.findOne({ uniqueid: id });
+        return res.status(200).json({ status: true, message: "appointment detail", resp });
+    } catch (error) {
+        return errorHandler(error, res);
+    }
+}
 
 
-module.exports = {  
+
+module.exports = {
     addDoctor,
     getAllDoctor,
     deleteDoctor,
     revertDoctor,
     updateDoctor,
-    getDoctorById
+    getDoctorById,
+
+    bookDoctor,
+    getAllBookDoctor,
+    getBookDoctorByUniqueId,
+    getBookDoctorById,
 }

@@ -1,7 +1,34 @@
 const router = require('express').Router();
 
-const { addSample, getAllSample, getSampleById, updateSample, deleteSample, bookSample, getAllBookSample, getBookSampleById } = require('../controllers/sampleController');
+const { addSample, getAllSample, getSampleById, updateSample, deleteSample, bookSample, getAllBookSample, getBookSampleById, getBookSampleByUniqueId } = require('../controllers/sampleController');
 const { AdminValidationToken } = require('../lib/validateToken/validate');
+
+
+/**************************************************** SAMPLE BOOKING  ********************************************************** */
+
+/**
+ * book sample
+*/
+router.post('/booksample', bookSample);
+
+/**
+ * get all booksample
+*/
+router.get('/booksample', getAllBookSample);
+
+/**
+ * get booksample by unique id
+*/
+
+router.get('/booksample/uniqueid/:id', AdminValidationToken, getBookSampleByUniqueId);
+
+/**
+ * get sample by id
+*/
+
+router.get('/booksample/:id', getBookSampleById);
+
+/**************************************************** SAMPLE GENERATION  ********************************************************** */
 
 
 /**
@@ -9,6 +36,7 @@ const { AdminValidationToken } = require('../lib/validateToken/validate');
  */
 router.get('/', AdminValidationToken, getAllSample);
 router.get('/:id', AdminValidationToken, getSampleById);
+
 
 /**
  * Add sample
@@ -25,25 +53,6 @@ router.put('/:id', AdminValidationToken, updateSample);
  */
 router.delete('/:id', AdminValidationToken, deleteSample);
 
-
-/**************************************************** SAMPLE BOOKING  ********************************************************** */
-
-/**
- * book sample
-*/
-router.post('/booksample', bookSample);
-
-/**
- * get all booksample
-*/
-router.get('/booksample', getAllBookSample);
-
-
-/**
- * get sample by id
-*/
-
-router.get('/booksample/:id', getBookSampleById);
 
 
 

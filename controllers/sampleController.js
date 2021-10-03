@@ -74,7 +74,7 @@ const getAllSample = async (req, res) => {
 }
 
 /**
- * delete all doctor
+ * delete sample
  */
 
 const deleteSample = async (req, res) => {
@@ -116,7 +116,7 @@ const updateSample = async (req, res) => {
 }
 
 /**
- * get doctor doctor
+ * get sample doctor
  */
 
 const getSampleById = async (req, res) => {
@@ -128,6 +128,7 @@ const getSampleById = async (req, res) => {
         const resp = await sampleModel.findById(id);
         return res.status(200).json({ status: true, message: "sample detail", resp });
     } catch (error) {
+        console.log(error);
         return errorHandler(error, res);
     }
 }
@@ -148,13 +149,13 @@ const bookSample = async (req, res) => {
 
             let file = null;
 
-            let uniqueid = genrateUniqueId();
+            let uniqueid = genrateUniqueId("SAM");
 
             let paymentmode = "unpaid";
 
-            const { sampleid, samplename, patientname, bookdate, patientnumber, testfee } = req.body;
-            if (!sampleid || !samplename || !patientname || !bookdate || !patientnumber || !testfee) {
-                return res.status(400).json({ status: false, message: "sampleid,samplename,patientname,bookdate,patientnumber,testfee are required" });
+            const { sampleid, samplename, patientname, bookdate, patientnumber, testfee,gender } = req.body;
+            if (!sampleid || !samplename || !patientname || !bookdate || !patientnumber || !testfee || !gender) {
+                return res.status(400).json({ status: false, message: "sampleid,samplename,patientname,bookdate,patientnumber,testfee,gender are required" });
             }
 
             // return
@@ -166,7 +167,7 @@ const bookSample = async (req, res) => {
                 file = req.files[0].filename;
             }
 
-            const newSampleCase = new booksampleModel({ sampleid, uniqueid, samplename, bookdate, patientname, patientnumber, file, paymentmode, testfee });
+            const newSampleCase = new booksampleModel({ sampleid, uniqueid, samplename, bookdate, patientname, patientnumber, file, paymentmode, testfee,gender });
             const resp = await newSampleCase.save();
             if (resp) {
                 return res.status(200).json({ status: true, message: "Test booked agent visit at your home", resp })
@@ -183,6 +184,7 @@ const getAllBookSample = async (req, res) => {
         const sampleData = await booksampleModel.find();
         return res.status(200).json({ status: true, message: "sample list", sampleData })
     } catch (error) {
+        console.log(error);
         return errorHandler(error, res);
     }
 }
@@ -201,7 +203,18 @@ const getBookSampleById = async (req, res) => {
     }
 }
 
-
+const getBookSampleByUniqueId = async (req, res) => {
+    const { id } = req.params;
+    if (!id) {
+        return res.status(400).json({ status: false, message: "sample id required" });
+    }
+    try {
+        const resp = await booksampleModel.findOne({uniqueid:id});
+        return res.status(200).json({ status: true, message: "sample detail", resp });
+    } catch (error) {
+        return errorHandler(error, res);
+    }
+}
 
 
 module.exports = {
@@ -212,5 +225,6 @@ module.exports = {
     updateSample,
     bookSample,
     getAllBookSample,
-    getBookSampleById
+    getBookSampleById,
+    getBookSampleByUniqueId
 }

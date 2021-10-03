@@ -33,6 +33,11 @@ const bookSampleSchema = new mongoose.Schema({
         required: true,
         trim: true,
     },
+    gender: {
+        type: String,
+        required: true,
+        trim: true,
+    },
     file: {
         type: String
     },

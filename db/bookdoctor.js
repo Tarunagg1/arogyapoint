@@ -7,30 +7,55 @@ const bookDoctorSchema = new mongoose.Schema({
         ref: 'doctor',
         required: true
     },
-    pname:{
+    uniqueid: {
         type: String,
         required: true,
         trim: true,
     },
-    pemail:{
+    pname: {
         type: String,
-        required:true,
+        required: true,
         trim: true,
     },
-    paymentmode:{
+    pemail: {
         type: String,
-        required:true,
+        required: true,
         trim: true,
-        ennum:['paid','unpaid']
+    },
+    pnumber: {
+        type: String,
+        required: true,
+        trim: true,
+    },
+    dname: {
+        type: String,
+        required: true,
+        trim: true,
+    },
+    demail: {
+        type: String,
+        required: true,
+        trim: true,
+    },
+    dnumber: {
+        type: String,
+        required: true,
+        trim: true,
+    },
+    paymentmode: {
+        type: String,
+        required: true,
+        trim: true,
+        ennum: ['paid', 'unpaid']
     },
     appointmentdate: {
         type: Date,
-        required:true
+        required: true
     },
-    doctorfee:{
+    doctorfee: {
         type: Number,
-        required:true
+        required: true
     }
-},{timestamps: true});
+}, { timestamps: true });
 
-module.exports = mongoose.model("bookdoctor",bookDoctorSchema);
+module.exports = mongoose.model("bookdoctor", bookDoctorSchema);
