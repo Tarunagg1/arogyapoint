@@ -8,9 +8,9 @@ const { AdminValidationToken } = require('../lib/validateToken/validate');
 /**
  * Get Book doctor
 */
-router.get('/bookdoctor',getAllBookDoctor)
-router.get('/bookdoctor/:id',getBookDoctorById)
-router.get('/bookdoctor/unique/:id',getBookDoctorByUniqueId)
+router.get('/bookdoctor',AdminValidationToken,getAllBookDoctor);
+router.get('/bookdoctor/:id',AdminValidationToken,getBookDoctorById);
+router.get('/bookdoctor/unique/:id',AdminValidationToken,getBookDoctorByUniqueId);
 
 /**
  * Book doctor
@@ -24,8 +24,8 @@ router.post('/bookdoctor',bookDoctor);
 /**
  * Get doctor
  */
-router.get('/',AdminValidationToken,getAllDoctor);
-router.get('/:id',AdminValidationToken,getDoctorById);
+router.get('/',getAllDoctor);
+router.get('/:id',getDoctorById);
 
 /**
  * Add doctor_route
@@ -45,7 +45,7 @@ router.delete('/:id',AdminValidationToken,deleteDoctor);
 /**
  * revert doctor
  */
- router.delete('/revert/:id',AdminValidationToken,revertDoctor);
+ router.put('/revert/:id',AdminValidationToken,revertDoctor);
 
 
 

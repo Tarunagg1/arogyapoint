@@ -14,7 +14,7 @@ router.post('/booksample', bookSample);
 /**
  * get all booksample
 */
-router.get('/booksample', getAllBookSample);
+router.get('/booksample', AdminValidationToken, getAllBookSample);
 
 /**
  * get booksample by unique id
@@ -26,7 +26,9 @@ router.get('/booksample/uniqueid/:id', AdminValidationToken, getBookSampleByUniq
  * get sample by id
 */
 
-router.get('/booksample/:id', getBookSampleById);
+router.get('/booksample/:id', AdminValidationToken, getBookSampleById);
+
+
 
 /**************************************************** SAMPLE GENERATION  ********************************************************** */
 
@@ -34,8 +36,8 @@ router.get('/booksample/:id', getBookSampleById);
 /**
  * Get sample
  */
-router.get('/', AdminValidationToken, getAllSample);
-router.get('/:id', AdminValidationToken, getSampleById);
+router.get('/', getAllSample);
+router.get('/:id', getSampleById);
 
 
 /**
